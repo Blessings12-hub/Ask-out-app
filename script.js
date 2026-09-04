@@ -14,10 +14,31 @@ function goToSlide(index){
   dots[current].classList.add('active');
 }
 
+// --- Background music: real autoplay, muted, then unmutes on first touch ---
+// No browser allows unmuted autoplay — that's a platform rule, not
+// something any site can code around. Muted autoplay is always allowed
+// though, so the track starts the instant the page loads (silently), and
+// the moment she taps anything at all it unmutes right where it already
+// is — no restart, no reload delay.
+if (music){
+  music.volume = 0.55;
+  music.play().catch(() => { /* even muted autoplay can be blocked in rare cases — the listener below covers it */ });
+
+  function unmuteMusic(){
+    music.muted = false;
+    if (music.paused) music.play().catch(() => {});
+  }
+
+  const unmuteEvents = ['pointerdown', 'touchstart', 'keydown'];
+  function firstTouch(){
+    unmuteMusic();
+    unmuteEvents.forEach(evt => document.removeEventListener(evt, firstTouch));
+  }
+  unmuteEvents.forEach(evt => document.addEventListener(evt, firstTouch, { once: true, passive: true }));
+}
+
 // --- Slide 0: start ---
 document.getElementById('start-btn').addEventListener('click', () => {
-  music.volume = 0.55;
-  music.play().catch(() => { /* browser blocked autoplay, that's fine */ });
   goToSlide(1);
 });
 
@@ -53,6 +74,25 @@ const yesBtn = document.getElementById('yes-btn');
 const noBtn = document.getElementById('no-btn');
 const askButtons = document.getElementById('ask-buttons');
 
+const teaserPhrases = [
+  'are you sure?',
+  'think about it...',
+  'wrong button 😏',
+  'really though?',
+  'one more try',
+  "it's not going anywhere",
+];
+let dodgeCount = 0;
+const teaserEl = document.getElementById('teaser-text');
+
+function showTeaser(){
+  if (!teaserEl) return;
+  teaserEl.textContent = teaserPhrases[dodgeCount % teaserPhrases.length];
+  teaserEl.classList.remove('is-visible');
+  void teaserEl.offsetWidth; // restart the pop animation even on a repeat phrase
+  teaserEl.classList.add('is-visible');
+}
+
 function dodgeNo(){
   const containerRect = askButtons.getBoundingClientRect();
   const btnRect = noBtn.getBoundingClientRect();
@@ -69,9 +109,15 @@ function dodgeNo(){
 
   noBtn.style.left = `${newX}px`;
   noBtn.style.top = `${Math.max(0, Math.min(maxY, maxY / 2 + newY))}px`;
+
+  dodgeCount++;
+  showTeaser();
 }
 
-['mouseenter', 'touchstart', 'pointerdown', 'focus'].forEach(evt => {
+// pointerdown alone covers mouse clicks and touch taps — pairing it with
+// touchstart made touch devices fire dodgeNo() twice per tap (a jarring
+// double-jump), so touchstart is dropped here.
+['mouseenter', 'pointerdown', 'focus'].forEach(evt => {
   noBtn.addEventListener(evt, (e) => {
     e.preventDefault();
     dodgeNo();
@@ -79,7 +125,6 @@ function dodgeNo(){
 });
 
 yesBtn.addEventListener('click', () => {
-  music.volume = 0.55;
   showCelebration();
 });
 
@@ -115,5 +160,5 @@ function launchConfetti(){
   }
 
   // clean up after the animation finishes so the DOM doesn't just grow
-  setTimeout(() => { layer.innerHTML = ''; }, 6000);
+  setTimeout(() => { layer.innerHTML = ''; }, 6500);
 }

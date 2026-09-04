@@ -16,11 +16,14 @@
 <body>
 
 <!--
-  Music: this tag points at music/song.mp3, which you add yourself.
-  Prefer a Spotify/Apple Music link instead of a local file? Delete the
-  <audio> tag below and see music/README.md for a copy-paste embed.
+  Music: this tag points at music/song.mp3, which you add yourself (see
+  music/README.md — it needs to be a track you actually have the rights
+  to, not a downloaded rip). It's muted+autoplay here on purpose: browsers
+  always allow muted autoplay, so the track is already rolling the instant
+  the page loads, and script.js unmutes it on her first tap so there's no
+  delay or reload when the sound kicks in.
 -->
-<audio id="bg-music" src="music/song.mp3" loop preload="auto"></audio>
+<audio id="bg-music" src="music/song.mp3" loop preload="auto" muted playsinline></audio>
 
 <div id="app">
 
@@ -106,6 +109,7 @@
         <button class="btn btn-yes" type="button" id="yes-btn">Yes</button>
         <button class="btn btn-no" type="button" id="no-btn">No</button>
       </div>
+      <p class="teaser" id="teaser-text"></p>
     </div>
   </section>
 
