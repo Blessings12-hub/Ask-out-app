@@ -1,15 +1,11 @@
-Add 5 photos here, named exactly:
+Your 5 photos are already in here as photo1.jpg through photo5.jpg,
+matching what index.html expects — no changes needed.
 
-photo1.jpg  → intro slide
-photo2.jpg  → "what to do" slide
-photo3.jpg  → "setting" slide
-photo4.jpg  → "time" slide
-photo5.jpg  → the ask slide
+They've been cleaned up from what you uploaded:
+- Renamed to photo1.jpg–photo5.jpg (they came in as random export names)
+- EXIF metadata stripped — phone photos often embed GPS coordinates and
+  device info; that's now removed so it doesn't travel with a public link
+- Auto-rotated and lightly compressed so the site loads fast on mobile data
 
-Tips:
-- Portrait or square photos work best (the site is built mobile-first).
-- Keep each file under ~1–2MB so the site loads fast — resize/compress before adding.
-- .jpg, .png, or .webp all work — just update the file extension in index.html
-  (search for "photo1.jpg" etc.) if you use something other than .jpg.
-- Until you add real photos, the slides will show a plum-colored gradient
-  instead — the site still works fine without them.
+If you swap in different photos later, keep the same 5 filenames (or
+update the paths in index.html to match whatever you use).
