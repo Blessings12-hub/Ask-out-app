@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>September 10th?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<audio id="bg-music" src="music/song.mp3" loop preload="auto"></audio>
+
+<div id="app">
+
+  <!-- Progress dots -->
+  <div class="dots" id="dots">
+    <span class="dot active" data-dot="0"></span>
+    <span class="dot" data-dot="1"></span>
+    <span class="dot" data-dot="2"></span>
+    <span class="dot" data-dot="3"></span>
+    <span class="dot" data-dot="4"></span>
+  </div>
+
+  <!-- SLIDE 0 — Intro -->
+  <section class="slide active" data-slide="0" style="background-image:url('images/photo1.jpg')">
+    <div class="scrim"></div>
+    <div class="content intro">
+      <p class="eyebrow-text">a small favor to ask</p>
+      <h1>Before you scroll any further,<br>I need to ask you something.</h1>
+      <p class="sub">It'll only take a minute. Promise.</p>
+      <button class="btn btn-primary" id="start-btn">Okay, go on</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 1 — What to do -->
+  <section class="slide" data-slide="1" style="background-image:url('images/photo2.jpg')">
+    <div class="scrim"></div>
+    <div class="content">
+      <p class="eyebrow-text">pick one</p>
+      <h2>If I took you out, what would you actually want to do?</h2>
+      <div class="options" data-question="activity">
+        <button class="option">Dinner somewhere new</button>
+        <button class="option">A lazy movie night</button>
+        <button class="option">An outdoor adventure</button>
+        <button class="option">Coffee and a long walk</button>
+      </div>
+      <button class="btn btn-next" disabled>Next</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — Setting -->
+  <section class="slide" data-slide="2" style="background-image:url('images/photo3.jpg')">
+    <div class="scrim"></div>
+    <div class="content">
+      <p class="eyebrow-text">pick one</p>
+      <h2>What kind of setting is calling your name?</h2>
+      <div class="options" data-question="setting">
+        <button class="option">Sunset by the water</button>
+        <button class="option">Cozy candlelight</button>
+        <button class="option">Somewhere with live music</button>
+        <button class="option">Just us, low key</button>
+      </div>
+      <button class="btn btn-next" disabled>Next</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — Time -->
+  <section class="slide" data-slide="3" style="background-image:url('images/photo4.jpg')">
+    <div class="scrim"></div>
+    <div class="content">
+      <p class="eyebrow-text">pick one</p>
+      <h2>And what time of day works best?</h2>
+      <div class="options" data-question="time">
+        <button class="option">Morning</button>
+        <button class="option">Afternoon</button>
+        <button class="option">Evening</button>
+        <button class="option">Late night</button>
+      </div>
+      <button class="btn btn-next" disabled>Next</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — The Ask -->
+  <section class="slide" data-slide="4" style="background-image:url('images/photo5.jpg')">
+    <div class="scrim"></div>
+    <div class="content ask">
+      <p class="eyebrow-text">last one</p>
+      <h1>Will you be my date<br>on September 10th, 2026?</h1>
+      <div class="ask-buttons" id="ask-buttons">
+        <button class="btn btn-yes" id="yes-btn">Yes</button>
+        <button class="btn btn-no" id="no-btn">No</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Celebration overlay -->
+  <div class="celebration" id="celebration">
+    <div class="confetti-layer" id="confetti-layer"></div>
+    <div class="celebration-content">
+      <p class="eyebrow-text">she said yes</p>
+      <h1>September 10th, 2026. It's a date.</h1>
+      <p class="summary" id="summary"></p>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
