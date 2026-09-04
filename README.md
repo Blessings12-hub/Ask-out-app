@@ -1,42 +1,60 @@
-# Will You Be My Date?
+# A Question For You
 
-A tiny 5-slide site to ask someone out — her photos in the background, a
-couple of playful "what should we do" questions, background music, and a
-final Yes/No slide where No runs away every time it's touched.
+A 5-slide site to ask someone out — her photos in the background, a couple
+of playful "what should we do" questions, background music, and a final
+Yes/No slide where No runs away every time it's touched.
 
 No build tools, no dependencies. Just HTML, CSS, and JS.
 
-## 1. Add your content
+## What's in here
 
-- **Photos** — drop 5 images into `images/` named `photo1.jpg` through
-  `photo5.jpg`. See `images/README.md` for details.
-- **Music** — drop one song into `music/` named `song.mp3`. See
-  `music/README.md` — you'll need to add this yourself since I can't
-  include copyrighted music in the files I hand you.
-- **The wording** — open `index.html` and edit the headlines, questions,
-  and answer options to sound like you. Search for "September 10th, 2026"
-  if the date ever needs to change.
+```
+.
+├── index.html      the 5 slides
+├── style.css        colors, type, layout
+├── script.js        slide logic, dodging No button, confetti, music
+├── vercel.json       clean URLs + caching for Vercel
+├── images/           her 5 photos (photo1.jpg–photo5.jpg)
+└── music/            your song goes here (see music/README.md)
+```
 
-## 2. Try it locally
+Photos are already in `images/`, cleaned up and renamed. Music is
+intentionally left out — see `music/README.md` for why and for two easy
+ways to add it back legally.
 
-Just open `index.html` in a browser — no server needed. (On a phone, you
-can also open it directly from your file manager or from GitHub Pages,
-see below.)
+## Try it locally
 
-## 3. Put it on GitHub
+Just open `index.html` in a browser — no server needed.
 
-If you're doing this from your phone, the GitHub app or github.com's
-in-browser file upload both work fine — you don't need git or a terminal.
+## Deploy on Vercel
 
-**Option A — GitHub mobile app / github.com (no terminal needed):**
-1. Create a new repository (e.g. `ask-her-out`).
-2. Use "Add file → Upload files" and upload everything in this folder,
-   keeping the same folder structure (`images/`, `music/` as subfolders).
-3. Commit directly to the `main` branch.
-
-**Option B — git on a computer:**
+**Fastest — Vercel CLI, no GitHub needed:**
 ```bash
-cd ask-out-app
+npm i -g vercel
+cd this-folder
+vercel --prod
+```
+When it asks about a framework, choose **Other** and leave the build
+command blank — this is a static site, nothing to build.
+
+**Or — import from GitHub:**
+1. Push this folder to a GitHub repo (see below).
+2. Go to vercel.com → **Add New → Project** → import that repo.
+3. Framework preset: **Other**. Leave build command / output directory
+   blank. Click **Deploy**.
+4. You'll get a live `https://your-project.vercel.app` link to send her.
+
+Either way, redeploying after you add `music/song.mp3` or swap a photo is
+just `vercel --prod` again, or a new push if you're using GitHub.
+
+## Push to GitHub (optional, if you want it there too)
+
+**No terminal needed:** create a new repo on github.com or in the GitHub
+app, then use "Add file → Upload files" to upload everything in this
+folder, keeping the `images/` and `music/` subfolders intact.
+
+**With git:**
+```bash
 git init
 git add .
 git commit -m "Ask her out"
@@ -45,23 +63,11 @@ git remote add origin https://github.com/YOUR-USERNAME/ask-her-out.git
 git push -u origin main
 ```
 
-## 4. Turn on GitHub Pages so you can send her a link
+## Customizing
 
-1. In the repo, go to **Settings → Pages**.
-2. Under "Build and deployment", set **Source** to `Deploy from a branch`.
-3. Pick the `main` branch and `/ (root)` folder, then **Save**.
-4. After a minute or two, your site will be live at:
-   `https://YOUR-USERNAME.github.io/ask-her-out/`
-
-Send her that link.
-
-## File structure
-
-```
-ask-out-app/
-├── index.html      the 5 slides
-├── style.css        colors, type, layout
-├── script.js        slide logic, dodging No button, confetti, music
-├── images/           her 5 photos go here
-└── music/            your song goes here
-```
+- **Wording** — open `index.html` and edit the headlines, questions, and
+  answer options.
+- **The date** — search `index.html` for "September 10th, 2026" if it
+  ever needs to change.
+- **Colors** — the palette lives at the top of `style.css` as CSS
+  variables (`--plum`, `--gold`, etc.).

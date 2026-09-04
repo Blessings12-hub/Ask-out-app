@@ -21,6 +21,13 @@ document.getElementById('start-btn').addEventListener('click', () => {
   goToSlide(1);
 });
 
+// --- Back buttons (slides 1-4) ---
+document.querySelectorAll('.btn-back').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (current > 0) goToSlide(current - 1);
+  });
+});
+
 // --- Slides 1-3: option questions ---
 document.querySelectorAll('.options').forEach(group => {
   const question = group.dataset.question;
@@ -105,4 +112,7 @@ function launchConfetti(){
     piece.style.animationDelay = `${Math.random() * 1.2}s`;
     layer.appendChild(piece);
   }
+
+  // clean up after the animation finishes so the DOM doesn't just grow
+  setTimeout(() => { layer.innerHTML = ''; }, 6000);
 }
