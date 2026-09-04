@@ -39,6 +39,7 @@ document.querySelectorAll('.options').forEach(group => {
       btn.classList.add('selected');
       answers[question] = btn.textContent;
       nextBtn.classList.add('enabled');
+      nextBtn.disabled = false;
     });
   });
 
