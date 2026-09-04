@@ -16,7 +16,10 @@ just drop it in here named exactly:
   song.mp3
 
 The <audio> tag in index.html already points at this file — nothing else
-to change.
+to change. It's wired for real autoplay too: the track starts muted the
+instant the page loads (every browser allows muted autoplay) and unmutes
+itself the moment she taps anything at all, so there's no "tap to start
+music" step and no restart when it becomes audible.
 
 Option B — embed it from Spotify instead (no file needed)
 -----------------------------------------------------------
