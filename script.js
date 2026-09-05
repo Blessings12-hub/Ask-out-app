@@ -13,16 +13,44 @@ function goToSlide(index){
   dots[current].classList.add('active');
 }
 
-// --- Music: Spotify widget starts open, then tucks into a small note icon
-// after a few seconds so it doesn't compete with the photos. Tap it anytime
-// to bring the player back.
+// --- Music: Spotify's official iFrame API (not the static ?autoplay=1 URL
+// trick, which Spotify's own community forums report as unreliable). This
+// creates a real embed controller we can call .play() on directly the
+// moment she taps anything — the same "real gesture triggers it" approach
+// used everywhere else, just through Spotify's API instead of <audio>.
 const musicChip = document.getElementById('music-chip');
+let spotifyController = null;
+
 if (musicChip){
+  window.onSpotifyIframeApiReady = (IFrameAPI) => {
+    const element = document.getElementById('spotify-embed');
+    const options = {
+      uri: 'spotify:track:43PuMrRfbyyuz4QpZ3oAwN',
+      width: '100%',
+      height: '80',
+      theme: 'dark',
+    };
+    IFrameAPI.createController(element, options, (EmbedController) => {
+      spotifyController = EmbedController;
+    });
+  };
+
+  const startEvents = ['pointerdown', 'touchstart', 'keydown'];
+  function startMusicOnFirstTouch(){
+    if (spotifyController) spotifyController.play();
+    startEvents.forEach(evt => document.removeEventListener(evt, startMusicOnFirstTouch));
+  }
+  startEvents.forEach(evt => document.addEventListener(evt, startMusicOnFirstTouch, { once: true, passive: true }));
+
+  // tucks into a small note icon after a few seconds so it doesn't compete
+  // with the photos; tap it anytime to bring the player back, or to
+  // pause/resume once it's expanded.
   const collapseTimer = setTimeout(() => musicChip.classList.add('is-collapsed'), 6000);
   musicChip.addEventListener('click', () => {
     if (musicChip.classList.contains('is-collapsed')){
       clearTimeout(collapseTimer);
       musicChip.classList.remove('is-collapsed');
+      if (spotifyController) spotifyController.play();
     }
   });
 }
@@ -40,19 +68,41 @@ document.querySelectorAll('.btn-continue').forEach(btn => {
   });
 });
 
-// --- Slide 2: the secret flip card ---
-const flipCard = document.getElementById('flip-card');
-const flipContinue = document.getElementById('flip-continue');
-if (flipCard && flipContinue){
-  function revealCard(){
-    flipCard.classList.add('flipped');
-    flipContinue.disabled = false;
-    flipContinue.classList.add('enabled');
+// --- Flip cards (the secret confession + the guess-the-number tease) ---
+document.querySelectorAll('.flip-card').forEach(card => {
+  const wrap = card.closest('.content');
+  const continueBtn = wrap ? wrap.querySelector('.btn-continue') : null;
+  const counterEl = card.querySelector('.counter');
+
+  function reveal(){
+    if (card.classList.contains('flipped')) return;
+    card.classList.add('flipped');
+    if (continueBtn){
+      continueBtn.disabled = false;
+      continueBtn.classList.add('enabled');
+    }
+    if (counterEl) animateCounter(counterEl);
   }
-  flipCard.addEventListener('click', revealCard);
-  flipCard.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); revealCard(); }
+
+  card.addEventListener('click', reveal);
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); reveal(); }
   });
+});
+
+function animateCounter(el){
+  const target = parseInt(el.dataset.target, 10) || 1000;
+  const duration = 1400;
+  const start = performance.now();
+
+  function step(now){
+    const p = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - p, 3); // ease-out, so it slows into the final number
+    el.textContent = Math.floor(eased * target).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target.toLocaleString();
+  }
+  requestAnimationFrame(step);
 }
 
 // --- Back buttons (slides 1-4) ---
@@ -62,18 +112,31 @@ document.querySelectorAll('.btn-back').forEach(btn => {
   });
 });
 
-// --- Slides with option questions (real ones + the just-for-fun quiz) ---
-const quizReactions = {
-  'Effortlessly stunning': "correct. that one wasn't even a trick question.",
-  'Dangerously charming': 'also correct. this quiz has no wrong answers, only right ones.',
-  'All of the above, obviously': 'the confidence. I respect it.',
-  "I refuse to pick just one": 'honestly the most accurate answer available.',
+// --- Slides with option questions (real ones + the just-for-fun ones) ---
+const funReactions = {
+  vibe: {
+    'Effortlessly stunning': "correct. that one wasn't even a trick question.",
+    'Dangerously charming': 'also correct. this quiz has no wrong answers, only right ones.',
+    'All of the above, obviously': 'the confidence. I respect it.',
+    "I refuse to pick just one": 'honestly the most accurate answer available.',
+  },
+  tease: {
+    'Hold hands in public': 'bold. I like it.',
+    'Steal fries off my plate': "fair warning: I will notice, and I will not stop you.",
+    'Send 3am "you up?" texts': 'already saved your contact for this exact purpose.',
+    'All three, no shame': "we're going to get along extremely well.",
+  },
 };
-const quizReactionEl = document.getElementById('quiz-reaction');
+const reactionElByQuestion = {
+  vibe: document.getElementById('quiz-reaction'),
+  tease: document.getElementById('tease-reaction'),
+};
 
 document.querySelectorAll('.options').forEach(group => {
   const question = group.dataset.question;
   const nextBtn = group.parentElement.querySelector('.btn-next');
+  const reactionEl = reactionElByQuestion[question];
+  const reactions = funReactions[question];
 
   group.querySelectorAll('.option').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -83,11 +146,11 @@ document.querySelectorAll('.options').forEach(group => {
       nextBtn.classList.add('enabled');
       nextBtn.disabled = false;
 
-      if (question === 'vibe' && quizReactionEl){
-        quizReactionEl.textContent = quizReactions[btn.textContent] || 'noted.';
-        quizReactionEl.classList.remove('is-visible');
-        void quizReactionEl.offsetWidth;
-        quizReactionEl.classList.add('is-visible');
+      if (reactions && reactionEl){
+        reactionEl.textContent = reactions[btn.textContent] || 'noted.';
+        reactionEl.classList.remove('is-visible');
+        void reactionEl.offsetWidth;
+        reactionEl.classList.add('is-visible');
       }
     });
   });
@@ -109,6 +172,12 @@ const teaserPhrases = [
   'really though?',
   'one more try',
   "it's not going anywhere",
+  'nope, try again',
+  "you're just tiring yourself out",
+  'last chance to say yes',
+  "I'll just wait here",
+  'okay now you\'re just exercising',
+  'be honest, you enjoy this',
 ];
 let dodgeCount = 0;
 const teaserEl = document.getElementById('teaser-text');

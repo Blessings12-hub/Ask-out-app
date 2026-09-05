@@ -19,19 +19,23 @@
   Music: this uses Spotify's own embedded player, which streams the track
   from Spotify's servers rather than hosting a copy of it yourself — the
   legal way to get a real song on a page like this (see music/README.md).
-  It's shown as a small pill in the corner rather than hidden, for two
-  reasons: (1) Spotify's widget needs to be visible to reliably autoplay
-  or be tapped, and (2) if she doesn't have Spotify Premium she only gets
-  a 30-second preview, so a visible "now playing" chip sets that
-  expectation instead of leaving her wondering why the music stopped.
+
+  It's wired through Spotify's official iFrame API (not just a static
+  ?autoplay=1 URL param, which Spotify's own community forums report as
+  unreliable/broken) so script.js can call controller.play() directly the
+  moment she taps anything on the page — the same "real gesture starts it"
+  approach used for local audio files, just via Spotify's API instead of
+  a plain <audio> tag.
+
+  It's shown as a small pill in the corner rather than hidden, since (1)
+  Spotify's widget needs to exist in the page to be controllable at all,
+  and (2) if she doesn't have Spotify Premium she only gets a 30-second
+  preview, so a visible "now playing" chip sets that expectation instead
+  of leaving her wondering why the music stopped.
 -->
+<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <div class="music-chip" id="music-chip">
-  <iframe
-    id="spotify-player"
-    src="https://open.spotify.com/embed/track/43PuMrRfbyyuz4QpZ3oAwN?utm_source=generator&theme=0&autoplay=1"
-    width="100%" height="80" frameborder="0"
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-    loading="lazy"></iframe>
+  <div id="spotify-embed"></div>
 </div>
 
 <div id="app">
@@ -48,6 +52,8 @@
     <span class="dot" data-dot="5"></span>
     <span class="dot" data-dot="6"></span>
     <span class="dot" data-dot="7"></span>
+    <span class="dot" data-dot="8"></span>
+    <span class="dot" data-dot="9"></span>
   </div>
 
   <!-- SLIDE 0 — Intro -->
@@ -81,13 +87,13 @@
     <div class="content">
       <p class="eyebrow-text">I have a secret</p>
       <h2>tap the card</h2>
-      <div class="flip-card" id="flip-card" role="button" tabindex="0" aria-label="Tap to reveal">
+      <div class="flip-card" role="button" tabindex="0" aria-label="Tap to reveal">
         <div class="flip-inner">
           <div class="flip-face flip-front">🤫</div>
           <div class="flip-face flip-back">I've liked you for a lot longer than I've let on. There, I said it.</div>
         </div>
       </div>
-      <button class="btn btn-primary btn-continue" type="button" id="flip-continue" disabled>Okay, moving on</button>
+      <button class="btn btn-primary btn-continue" type="button" disabled>Okay, moving on</button>
     </div>
   </section>
 
@@ -109,8 +115,26 @@
     </div>
   </section>
 
-  <!-- SLIDE 4 — What to do -->
-  <section class="slide" data-slide="4" style="background-image:url('images/photo2.jpg')">
+  <!-- SLIDE 4 — Would you rather (tease) -->
+  <section class="slide" data-slide="4" style="background-image:url('images/photo5.jpg')">
+    <div class="scrim"></div>
+    <button class="btn-back" type="button" aria-label="Back">‹</button>
+    <div class="content">
+      <p class="eyebrow-text">one more before the real questions</p>
+      <h2>quick one — would you rather&hellip;</h2>
+      <div class="options" data-question="tease">
+        <button class="option" type="button">Hold hands in public</button>
+        <button class="option" type="button">Steal fries off my plate</button>
+        <button class="option" type="button">Send 3am "you up?" texts</button>
+        <button class="option" type="button">All three, no shame</button>
+      </div>
+      <p class="quiz-reaction" id="tease-reaction"></p>
+      <button class="btn btn-next" type="button" disabled>Next</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — What to do -->
+  <section class="slide" data-slide="5" style="background-image:url('images/photo1.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -126,8 +150,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 5 — Setting -->
-  <section class="slide" data-slide="5" style="background-image:url('images/photo3.jpg')">
+  <!-- SLIDE 6 — Setting -->
+  <section class="slide" data-slide="6" style="background-image:url('images/photo2.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -143,8 +167,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 6 — Time -->
-  <section class="slide" data-slide="6" style="background-image:url('images/photo4.jpg')">
+  <!-- SLIDE 7 — Time -->
+  <section class="slide" data-slide="7" style="background-image:url('images/photo3.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -160,8 +184,28 @@
     </div>
   </section>
 
-  <!-- SLIDE 7 — The Ask -->
-  <section class="slide" data-slide="7" style="background-image:url('images/photo5.jpg')">
+  <!-- SLIDE 8 — Guess the number (tease, surprising) -->
+  <section class="slide" data-slide="8" style="background-image:url('images/photo4.jpg')">
+    <div class="scrim"></div>
+    <button class="btn-back" type="button" aria-label="Back">‹</button>
+    <div class="content">
+      <p class="eyebrow-text">last tease, promise</p>
+      <h2>guess how many times I've thought about asking you this</h2>
+      <div class="flip-card" role="button" tabindex="0" aria-label="Tap to reveal">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">🤔</div>
+          <div class="flip-face flip-back">
+            <span class="counter" data-target="1483">0</span>
+            <p class="counter-caption">times. okay, I stopped counting.</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-continue" type="button" disabled>okay, ask me already</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 — The Ask -->
+  <section class="slide" data-slide="9" style="background-image:url('images/photo5.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content ask">

@@ -1,9 +1,9 @@
 # A Question For You
 
-An 8-slide site to ask someone out — her photos in the background, a
-couple of playful "love bomb" slides, three "what should we do" questions,
-background music, and a final Yes/No slide where No runs away every time
-it's touched.
+A 10-slide site to ask someone out — her photos in the background, a
+handful of playful "love bomb" and teasing slides, three "what should we
+do" questions, background music, and a final Yes/No slide where No runs
+away every time it's touched.
 
 No build tools, no dependencies. Just HTML, CSS, and JS.
 
@@ -13,12 +13,15 @@ No build tools, no dependencies. Just HTML, CSS, and JS.
 2. **Fair warning** — a joke disclaimer about what's coming
 3. **Secret reveal** — a tap-to-flip card with a confession
 4. **Pop quiz** — a silly, all-flattering multiple choice question
-5. **Activity** — what she'd actually want to do
-6. **Setting** — the vibe she's picking
-7. **Time of day** — morning through late night
-8. **The ask** — Yes / No, where No dodges around the screen with
-   teasing captions, then confetti + a "she said yes" screen with a
-   punchline
+5. **Would you rather** — a teasing hypothetical, no wrong answers
+6. **Activity** — what she'd actually want to do
+7. **Setting** — the vibe she's picking
+8. **Time of day** — morning through late night
+9. **Guess the number** — a tap-to-flip card with a comedic counting
+   animation, one last tease before the ask
+10. **The ask** — Yes / No, where No dodges around the screen with
+    teasing captions, then confetti + a "she said yes" screen with a
+    punchline
 
 There's also an ambient sparkle field and a small cursor/touch sparkle
 trail throughout (skipped automatically if the person has reduced-motion
@@ -28,7 +31,7 @@ turned on).
 
 ```
 .
-├── index.html      the 8 slides
+├── index.html      the 10 slides
 ├── style.css        colors, type, layout, effects
 ├── script.js        slide logic, dodging No button, confetti, sparkles, music
 ├── vercel.json       clean URLs + caching for Vercel

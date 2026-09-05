@@ -255,6 +255,19 @@ h2{ font-size: clamp(24px, 6.5vw, 32px); margin-bottom: 28px; }
   font-size: 17px;
   line-height: 1.4;
   transform: rotateY(180deg);
+  flex-direction: column;
+  gap: 6px;
+}
+.counter{
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.counter-caption{
+  font-size: 13px;
+  opacity: 0.85;
 }
 
 .ask-buttons{
