@@ -16,16 +16,27 @@
 <body>
 
 <!--
-  Music: this tag points at music/song.mp3, which you add yourself (see
-  music/README.md — it needs to be a track you actually have the rights
-  to, not a downloaded rip). It's muted+autoplay here on purpose: browsers
-  always allow muted autoplay, so the track is already rolling the instant
-  the page loads, and script.js unmutes it on her first tap so there's no
-  delay or reload when the sound kicks in.
+  Music: this uses Spotify's own embedded player, which streams the track
+  from Spotify's servers rather than hosting a copy of it yourself — the
+  legal way to get a real song on a page like this (see music/README.md).
+  It's shown as a small pill in the corner rather than hidden, for two
+  reasons: (1) Spotify's widget needs to be visible to reliably autoplay
+  or be tapped, and (2) if she doesn't have Spotify Premium she only gets
+  a 30-second preview, so a visible "now playing" chip sets that
+  expectation instead of leaving her wondering why the music stopped.
 -->
-<iframe style="display:none" src="https://open.spotify.com/track/43PuMrRfbyyuz4QpZ3oAwN?si=HrjyWyUPTvabf4GlvoqCDA&utm_source=copy-link" allow="autoplay; encrypted-media"></iframe>
+<div class="music-chip" id="music-chip">
+  <iframe
+    id="spotify-player"
+    src="https://open.spotify.com/embed/track/43PuMrRfbyyuz4QpZ3oAwN?utm_source=generator&theme=0&autoplay=1"
+    width="100%" height="80" frameborder="0"
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy"></iframe>
+</div>
 
 <div id="app">
+
+  <canvas id="sparkle-canvas"></canvas>
 
   <!-- Progress dots -->
   <div class="dots" id="dots">
@@ -34,6 +45,9 @@
     <span class="dot" data-dot="2"></span>
     <span class="dot" data-dot="3"></span>
     <span class="dot" data-dot="4"></span>
+    <span class="dot" data-dot="5"></span>
+    <span class="dot" data-dot="6"></span>
+    <span class="dot" data-dot="7"></span>
   </div>
 
   <!-- SLIDE 0 — Intro -->
@@ -47,8 +61,56 @@
     </div>
   </section>
 
-  <!-- SLIDE 1 — What to do -->
+  <!-- SLIDE 1 — Fair warning (love bomb, funny) -->
   <section class="slide" data-slide="1" style="background-image:url('images/photo2.jpg')">
+    <div class="scrim"></div>
+    <button class="btn-back" type="button" aria-label="Back">‹</button>
+    <div class="content">
+      <p class="eyebrow-text">quick disclaimer</p>
+      <h1>⚠️ fair warning</h1>
+      <p class="sub">continuing past this slide may cause: excessive smiling, rereading texts you've already read twice, and telling at least one friend about this within the hour.</p>
+      <p class="sub sub--small">side effects are not my responsibility. proceed anyway.</p>
+      <button class="btn btn-primary btn-continue" type="button">I accept the risk</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — Secret reveal (surprising) -->
+  <section class="slide" data-slide="2" style="background-image:url('images/photo3.jpg')">
+    <div class="scrim"></div>
+    <button class="btn-back" type="button" aria-label="Back">‹</button>
+    <div class="content">
+      <p class="eyebrow-text">I have a secret</p>
+      <h2>tap the card</h2>
+      <div class="flip-card" id="flip-card" role="button" tabindex="0" aria-label="Tap to reveal">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">🤫</div>
+          <div class="flip-face flip-back">I've liked you for a lot longer than I've let on. There, I said it.</div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-continue" type="button" id="flip-continue" disabled>Okay, moving on</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — Pop quiz (love bomb, funny) -->
+  <section class="slide" data-slide="3" style="background-image:url('images/photo4.jpg')">
+    <div class="scrim"></div>
+    <button class="btn-back" type="button" aria-label="Back">‹</button>
+    <div class="content">
+      <p class="eyebrow-text">pop quiz, no pressure</p>
+      <h2>pick the most accurate description of you</h2>
+      <div class="options" data-question="vibe">
+        <button class="option" type="button">Effortlessly stunning</button>
+        <button class="option" type="button">Dangerously charming</button>
+        <button class="option" type="button">All of the above, obviously</button>
+        <button class="option" type="button">I refuse to pick just one</button>
+      </div>
+      <p class="quiz-reaction" id="quiz-reaction"></p>
+      <button class="btn btn-next" type="button" disabled>Next</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — What to do -->
+  <section class="slide" data-slide="4" style="background-image:url('images/photo2.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -64,8 +126,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 2 — Setting -->
-  <section class="slide" data-slide="2" style="background-image:url('images/photo3.jpg')">
+  <!-- SLIDE 5 — Setting -->
+  <section class="slide" data-slide="5" style="background-image:url('images/photo3.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -81,8 +143,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 3 — Time -->
-  <section class="slide" data-slide="3" style="background-image:url('images/photo4.jpg')">
+  <!-- SLIDE 6 — Time -->
+  <section class="slide" data-slide="6" style="background-image:url('images/photo4.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -98,8 +160,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 4 — The Ask -->
-  <section class="slide" data-slide="4" style="background-image:url('images/photo5.jpg')">
+  <!-- SLIDE 7 — The Ask -->
+  <section class="slide" data-slide="7" style="background-image:url('images/photo5.jpg')">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content ask">
@@ -120,6 +182,7 @@
       <p class="eyebrow-text">she said yes</p>
       <h1>September 10th, 2026. It's a date.</h1>
       <p class="summary" id="summary"></p>
+      <p class="punchline" id="punchline">I knew you wouldn't say no. Btw, it wasn't even gonna work if you tried&hellip; hahaha, jokes on you 😂</p>
     </div>
   </div>
 

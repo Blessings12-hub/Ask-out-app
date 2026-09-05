@@ -1,7 +1,6 @@
 const app = document.getElementById('app');
 const slides = Array.from(document.querySelectorAll('.slide'));
 const dots = Array.from(document.querySelectorAll('.dot'));
-const music = document.getElementById('bg-music');
 
 let current = 0;
 const answers = {};
@@ -14,33 +13,47 @@ function goToSlide(index){
   dots[current].classList.add('active');
 }
 
-// --- Background music: real autoplay, muted, then unmutes on first touch ---
-// No browser allows unmuted autoplay — that's a platform rule, not
-// something any site can code around. Muted autoplay is always allowed
-// though, so the track starts the instant the page loads (silently), and
-// the moment she taps anything at all it unmutes right where it already
-// is — no restart, no reload delay.
-if (music){
-  music.volume = 0.55;
-  music.play().catch(() => { /* even muted autoplay can be blocked in rare cases — the listener below covers it */ });
-
-  function unmuteMusic(){
-    music.muted = false;
-    if (music.paused) music.play().catch(() => {});
-  }
-
-  const unmuteEvents = ['pointerdown', 'touchstart', 'keydown'];
-  function firstTouch(){
-    unmuteMusic();
-    unmuteEvents.forEach(evt => document.removeEventListener(evt, firstTouch));
-  }
-  unmuteEvents.forEach(evt => document.addEventListener(evt, firstTouch, { once: true, passive: true }));
+// --- Music: Spotify widget starts open, then tucks into a small note icon
+// after a few seconds so it doesn't compete with the photos. Tap it anytime
+// to bring the player back.
+const musicChip = document.getElementById('music-chip');
+if (musicChip){
+  const collapseTimer = setTimeout(() => musicChip.classList.add('is-collapsed'), 6000);
+  musicChip.addEventListener('click', () => {
+    if (musicChip.classList.contains('is-collapsed')){
+      clearTimeout(collapseTimer);
+      musicChip.classList.remove('is-collapsed');
+    }
+  });
 }
 
 // --- Slide 0: start ---
 document.getElementById('start-btn').addEventListener('click', () => {
   goToSlide(1);
 });
+
+// --- Generic "just continue" buttons (the love-bomb slides) ---
+document.querySelectorAll('.btn-continue').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    goToSlide(current + 1);
+  });
+});
+
+// --- Slide 2: the secret flip card ---
+const flipCard = document.getElementById('flip-card');
+const flipContinue = document.getElementById('flip-continue');
+if (flipCard && flipContinue){
+  function revealCard(){
+    flipCard.classList.add('flipped');
+    flipContinue.disabled = false;
+    flipContinue.classList.add('enabled');
+  }
+  flipCard.addEventListener('click', revealCard);
+  flipCard.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); revealCard(); }
+  });
+}
 
 // --- Back buttons (slides 1-4) ---
 document.querySelectorAll('.btn-back').forEach(btn => {
@@ -49,7 +62,15 @@ document.querySelectorAll('.btn-back').forEach(btn => {
   });
 });
 
-// --- Slides 1-3: option questions ---
+// --- Slides with option questions (real ones + the just-for-fun quiz) ---
+const quizReactions = {
+  'Effortlessly stunning': "correct. that one wasn't even a trick question.",
+  'Dangerously charming': 'also correct. this quiz has no wrong answers, only right ones.',
+  'All of the above, obviously': 'the confidence. I respect it.',
+  "I refuse to pick just one": 'honestly the most accurate answer available.',
+};
+const quizReactionEl = document.getElementById('quiz-reaction');
+
 document.querySelectorAll('.options').forEach(group => {
   const question = group.dataset.question;
   const nextBtn = group.parentElement.querySelector('.btn-next');
@@ -61,6 +82,13 @@ document.querySelectorAll('.options').forEach(group => {
       answers[question] = btn.textContent;
       nextBtn.classList.add('enabled');
       nextBtn.disabled = false;
+
+      if (question === 'vibe' && quizReactionEl){
+        quizReactionEl.textContent = quizReactions[btn.textContent] || 'noted.';
+        quizReactionEl.classList.remove('is-visible');
+        void quizReactionEl.offsetWidth;
+        quizReactionEl.classList.add('is-visible');
+      }
     });
   });
 
@@ -131,6 +159,7 @@ yesBtn.addEventListener('click', () => {
 function showCelebration(){
   const el = document.getElementById('celebration');
   const summary = document.getElementById('summary');
+  const punchline = document.getElementById('punchline');
 
   const parts = [];
   if (answers.activity) parts.push(answers.activity.toLowerCase());
@@ -143,7 +172,92 @@ function showCelebration(){
 
   launchConfetti();
   el.classList.add('show');
+
+  // let the sincere line land first, then the punchline for comedic timing
+  if (punchline){
+    setTimeout(() => punchline.classList.add('is-visible'), 1600);
+  }
 }
+
+// --- Magical touches: ambient twinkle field + a sparkle trail on touch/cursor ---
+// Both fully skip their animation loops if the person has reduced-motion set.
+(function magic(){
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('sparkle-canvas');
+  if (canvas){
+    const ctx = canvas.getContext('2d');
+    let w, h, dots = [];
+
+    function resize(){
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      const count = Math.round((w * h) / 22000);
+      dots = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.4 + 0.4,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.0015 + 0.0006,
+      }));
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function drawStatic(){
+      ctx.clearRect(0, 0, w, h);
+      dots.forEach(d => {
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = '#F3E3DC';
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    if (prefersReducedMotion){
+      drawStatic();
+    } else {
+      let t = 0;
+      function tick(){
+        t++;
+        ctx.clearRect(0, 0, w, h);
+        dots.forEach(d => {
+          const twinkle = 0.25 + Math.abs(Math.sin(t * d.speed + d.phase)) * 0.55;
+          ctx.globalAlpha = twinkle;
+          ctx.fillStyle = '#F3E3DC';
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+  }
+
+  if (prefersReducedMotion) return;
+
+  // sparkle trail on pointer/touch movement, throttled and capped
+  let lastSpark = 0;
+  function spawnSparkle(x, y){
+    const now = performance.now();
+    if (now - lastSpark < 60) return;
+    lastSpark = now;
+
+    const el = document.createElement('span');
+    el.className = 'cursor-sparkle';
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 700);
+  }
+
+  window.addEventListener('pointermove', (e) => spawnSparkle(e.clientX, e.clientY), { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    if (t) spawnSparkle(t.clientX, t.clientY);
+  }, { passive: true });
+})();
 
 function launchConfetti(){
   const layer = document.getElementById('confetti-layer');

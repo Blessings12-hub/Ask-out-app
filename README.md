@@ -1,26 +1,44 @@
 # A Question For You
 
-A 5-slide site to ask someone out — her photos in the background, a couple
-of playful "what should we do" questions, background music, and a final
-Yes/No slide where No runs away every time it's touched.
+An 8-slide site to ask someone out — her photos in the background, a
+couple of playful "love bomb" slides, three "what should we do" questions,
+background music, and a final Yes/No slide where No runs away every time
+it's touched.
 
 No build tools, no dependencies. Just HTML, CSS, and JS.
+
+## The slides
+
+1. **Intro** — the setup
+2. **Fair warning** — a joke disclaimer about what's coming
+3. **Secret reveal** — a tap-to-flip card with a confession
+4. **Pop quiz** — a silly, all-flattering multiple choice question
+5. **Activity** — what she'd actually want to do
+6. **Setting** — the vibe she's picking
+7. **Time of day** — morning through late night
+8. **The ask** — Yes / No, where No dodges around the screen with
+   teasing captions, then confetti + a "she said yes" screen with a
+   punchline
+
+There's also an ambient sparkle field and a small cursor/touch sparkle
+trail throughout (skipped automatically if the person has reduced-motion
+turned on).
 
 ## What's in here
 
 ```
 .
-├── index.html      the 5 slides
-├── style.css        colors, type, layout
-├── script.js        slide logic, dodging No button, confetti, music
+├── index.html      the 8 slides
+├── style.css        colors, type, layout, effects
+├── script.js        slide logic, dodging No button, confetti, sparkles, music
 ├── vercel.json       clean URLs + caching for Vercel
 ├── images/           her 5 photos (photo1.jpg–photo5.jpg)
-└── music/            your song goes here (see music/README.md)
+└── music/            background music setup — see music/README.md
 ```
 
-Photos are already in `images/`, cleaned up and renamed. Music is
-intentionally left out — see `music/README.md` for why and for two easy
-ways to add it back legally.
+Photos are already in `images/`, cleaned up and renamed. Music currently
+streams from Spotify via an embedded widget — see `music/README.md` for
+how to swap the track, or switch to a local file you own instead.
 
 ## Try it locally
 
@@ -44,7 +62,7 @@ command blank — this is a static site, nothing to build.
    blank. Click **Deploy**.
 4. You'll get a live `https://your-project.vercel.app` link to send her.
 
-Either way, redeploying after you add `music/song.mp3` or swap a photo is
+Either way, redeploying after you swap a photo or the Spotify track is
 just `vercel --prod` again, or a new push if you're using GitHub.
 
 ## Push to GitHub (optional, if you want it there too)
@@ -69,5 +87,7 @@ git push -u origin main
   answer options.
 - **The date** — search `index.html` for "September 10th, 2026" if it
   ever needs to change.
+- **The punchline** — search `index.html` for `id="punchline"` to edit or
+  remove the joke line on the final screen.
 - **Colors** — the palette lives at the top of `style.css` as CSS
   variables (`--plum`, `--gold`, etc.).
