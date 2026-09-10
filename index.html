@@ -15,29 +15,6 @@
 </head>
 <body>
 
-<!--
-  Music: this uses Spotify's own embedded player, which streams the track
-  from Spotify's servers rather than hosting a copy of it yourself — the
-  legal way to get a real song on a page like this (see music/README.md).
-
-  It's wired through Spotify's official iFrame API (not just a static
-  ?autoplay=1 URL param, which Spotify's own community forums report as
-  unreliable/broken) so script.js can call controller.play() directly the
-  moment she taps anything on the page — the same "real gesture starts it"
-  approach used for local audio files, just via Spotify's API instead of
-  a plain <audio> tag.
-
-  It's shown as a small pill in the corner rather than hidden, since (1)
-  Spotify's widget needs to exist in the page to be controllable at all,
-  and (2) if she doesn't have Spotify Premium she only gets a 30-second
-  preview, so a visible "now playing" chip sets that expectation instead
-  of leaving her wondering why the music stopped.
--->
-<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
-<div class="music-chip" id="music-chip">
-  <div id="spotify-embed"></div>
-</div>
-
 <div id="app">
 
   <canvas id="sparkle-canvas"></canvas>
@@ -53,7 +30,6 @@
     <span class="dot" data-dot="6"></span>
     <span class="dot" data-dot="7"></span>
     <span class="dot" data-dot="8"></span>
-    <span class="dot" data-dot="9"></span>
   </div>
 
   <!-- SLIDE 0 — Intro -->
@@ -97,26 +73,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 3 — Pop quiz (love bomb, funny) -->
+  <!-- SLIDE 3 — Would you rather (tease) -->
   <section class="slide" data-slide="3">
-    <div class="scrim"></div>
-    <button class="btn-back" type="button" aria-label="Back">‹</button>
-    <div class="content">
-      <p class="eyebrow-text">pop quiz, no pressure</p>
-      <h2>pick the most accurate description of you</h2>
-      <div class="options" data-question="vibe">
-        <button class="option" type="button">Effortlessly stunning</button>
-        <button class="option" type="button">Dangerously charming</button>
-        <button class="option" type="button">All of the above, obviously</button>
-        <button class="option" type="button">I refuse to pick just one</button>
-      </div>
-      <p class="quiz-reaction" id="quiz-reaction"></p>
-      <button class="btn btn-next" type="button" disabled>Next</button>
-    </div>
-  </section>
-
-  <!-- SLIDE 4 — Would you rather (tease) -->
-  <section class="slide" data-slide="4">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -133,8 +91,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 5 — What to do -->
-  <section class="slide" data-slide="5">
+  <!-- SLIDE 4 — What to do -->
+  <section class="slide" data-slide="4">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -150,8 +108,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 6 — Setting -->
-  <section class="slide" data-slide="6">
+  <!-- SLIDE 5 — Setting -->
+  <section class="slide" data-slide="5">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -167,8 +125,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 7 — Time -->
-  <section class="slide" data-slide="7">
+  <!-- SLIDE 6 — Time -->
+  <section class="slide" data-slide="6">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -184,8 +142,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 8 — Guess the number (tease, surprising) -->
-  <section class="slide" data-slide="8">
+  <!-- SLIDE 7 — Guess the number (tease, surprising) -->
+  <section class="slide" data-slide="7">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content">
@@ -201,8 +159,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 9 — The Ask -->
-  <section class="slide" data-slide="9">
+  <!-- SLIDE 8 — The Ask -->
+  <section class="slide" data-slide="8">
     <div class="scrim"></div>
     <button class="btn-back" type="button" aria-label="Back">‹</button>
     <div class="content ask">

@@ -13,48 +13,6 @@ function goToSlide(index){
   dots[current].classList.add('active');
 }
 
-// --- Music: Spotify's official iFrame API (not the static ?autoplay=1 URL
-// trick, which Spotify's own community forums report as unreliable). This
-// creates a real embed controller we can call .play() on directly the
-// moment she taps anything — the same "real gesture triggers it" approach
-// used everywhere else, just through Spotify's API instead of <audio>.
-const musicChip = document.getElementById('music-chip');
-let spotifyController = null;
-
-if (musicChip){
-  window.onSpotifyIframeApiReady = (IFrameAPI) => {
-    const element = document.getElementById('spotify-embed');
-    const options = {
-      uri: 'spotify:track:0tgVpDi06FyKpA1z0VMD4v', // "Perfect" — Ed Sheeran
-      width: '100%',
-      height: '80',
-      theme: 'dark',
-    };
-    IFrameAPI.createController(element, options, (EmbedController) => {
-      spotifyController = EmbedController;
-    });
-  };
-
-  const startEvents = ['pointerdown', 'touchstart', 'keydown'];
-  function startMusicOnFirstTouch(){
-    if (spotifyController) spotifyController.play();
-    startEvents.forEach(evt => document.removeEventListener(evt, startMusicOnFirstTouch));
-  }
-  startEvents.forEach(evt => document.addEventListener(evt, startMusicOnFirstTouch, { once: true, passive: true }));
-
-  // tucks into a small note icon after a few seconds so it doesn't compete
-  // with the photos; tap it anytime to bring the player back, or to
-  // pause/resume once it's expanded.
-  const collapseTimer = setTimeout(() => musicChip.classList.add('is-collapsed'), 6000);
-  musicChip.addEventListener('click', () => {
-    if (musicChip.classList.contains('is-collapsed')){
-      clearTimeout(collapseTimer);
-      musicChip.classList.remove('is-collapsed');
-      if (spotifyController) spotifyController.play();
-    }
-  });
-}
-
 // --- Slide 0: start ---
 document.getElementById('start-btn').addEventListener('click', () => {
   goToSlide(1);
@@ -114,12 +72,6 @@ document.querySelectorAll('.btn-back').forEach(btn => {
 
 // --- Slides with option questions (real ones + the just-for-fun ones) ---
 const funReactions = {
-  vibe: {
-    'Effortlessly stunning': "correct. that one wasn't even a trick question.",
-    'Dangerously charming': 'also correct. this quiz has no wrong answers, only right ones.',
-    'All of the above, obviously': 'the confidence. I respect it.',
-    "I refuse to pick just one": 'honestly the most accurate answer available.',
-  },
   tease: {
     'Hold hands in public': 'bold. I like it.',
     'Steal fries off my plate': "fair warning: I will notice, and I will not stop you.",
@@ -128,7 +80,6 @@ const funReactions = {
   },
 };
 const reactionElByQuestion = {
-  vibe: document.getElementById('quiz-reaction'),
   tease: document.getElementById('tease-reaction'),
 };
 
