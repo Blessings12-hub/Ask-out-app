@@ -25,7 +25,7 @@ if (musicChip){
   window.onSpotifyIframeApiReady = (IFrameAPI) => {
     const element = document.getElementById('spotify-embed');
     const options = {
-      uri: 'spotify:track:43PuMrRfbyyuz4QpZ3oAwN',
+      uri: 'spotify:track:0tgVpDi06FyKpA1z0VMD4v', // "Perfect" — Ed Sheeran
       width: '100%',
       height: '80',
       theme: 'dark',

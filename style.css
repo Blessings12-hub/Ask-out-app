@@ -71,10 +71,8 @@ html, body{
   transform: scale(1);
 }
 
-/* If a real photo is present it draws over the gradient automatically
-   because background-image on the element itself (set inline) sits on
-   top of nothing — inline style wins. The gradient above is just the
-   fallback look when images/photoN.jpg is missing. */
+/* Every slide uses this plain plum/gold gradient as its background —
+   no photos are set inline anymore. */
 
 .scrim{
   position: absolute;
